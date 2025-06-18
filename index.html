@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Planer Tras Autobusowych</title>
+<style>
+  /* Reset i font */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.3s, color 0.3s;
+    overflow-x: hidden;
+  }
+  :root {
+    --bg: #f0f2f5;
+    --sidebar-bg: #ffffff;
+    --text: #222;
+    --accent: #0078d7;
+    --shadow: rgba(0,0,0,0.15);
+  }
+  [data-theme="dark"] {
+    --bg: #121212;
+    --sidebar-bg: #1e1e1e;
+    --text: #ddd;
+    --accent: #3a84ff;
+    --shadow: rgba(0,0,0,0.7);
+  }
+  .stops-list {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid rgba(255,255,255,0.7);
+  color: white;
+  font-size: 0.9rem;
+  user-select: none;
+}
+.stop {
+  margin-bottom: 0.2rem;
+  padding-left: 0.4rem;
+}
+.stop.first {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.stop.last {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+  /* Layout */
+  #app {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  aside {
+    width: 280px;
+    background: var(--sidebar-bg);
+    box-shadow: 2px 0 10px var(--shadow);
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s;
+    position: relative;
+  }
+  aside h2 {
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  aside input[type="text"] {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  #routeList {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+  .route-item {
+    background: var(--bg);
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 3px 6px var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .route-item:hover,
+  .route-item:focus-visible {
+    background-color: var(--accent);
+    color: white;
+    outline: none;
+  }
+  .route-color {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--shadow);
+  }
+  .route-name {
+    flex-grow: 1;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  main {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+  }
+
+  button.theme-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: var(--accent);
+    transition: color 0.3s;
+  }
+  button.theme-toggle:hover {
+    color: var(--accent);
+  }
+
+  /* Szczegóły i kontrolki */
+  #timeSelectors {
+    margin-bottom: 1rem;
+  }
+  .time-btn {
+    margin: 0 0.3rem 0.5rem 0;
+    padding: 0.5em 1em;
+    border-radius: 20px;
+    border: none;
+    background-color: #eee;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .time-btn:hover {
+    background-color: var(--accent);
+    color: white;
+  }
+  .time-btn.selected {
+    background-color: var(--accent);
+    color: white;
+  }
+
+  #lineSelector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .line-item {
+    padding: 0.7em 1em;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 3px 8px var(--shadow);
+    transition: transform 0.2s;
+  }
+  .line-item:hover {
+    transform: scale(1.05);
+    cursor: default;
+  }
+  .line-walk {
+    background: #aaa !important;
+    color: #333 !important;
+    font-style: italic;
+    box-shadow: none !important;
+  }
+
+  #routeSummary {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--sidebar-bg);
+    box-shadow: 0 4px 15px var(--shadow);
+    user-select: none;
+  }
+
+  /* Scrollbar */
+  #routeList::-webkit-scrollbar {
+    width: 8px;
+  }
+  #routeList::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #routeList::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: 10px;
+  }
+
+  /* Responsive sidebar (wysuwany na małych ekranach) */
+  @media (max-width: 768px) {
+    #app {
+      flex-direction: row;
+    }
+    aside {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      height: 100vh;
+      z-index: 10;
+      transition: left 0.3s ease;
+      box-shadow: 3px 0 15px var(--shadow);
+    }
+    aside.open {
+      left: 0;
+    }
+    main {
+      padding: 1.5rem 1rem;
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+    }
+    main.shifted {
+      margin-left: 280px;
+    }
+    #menuToggleBtn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: 0 2px 8px var(--shadow);
+      transition: background-color 0.3s;
+    }
+    #menuToggleBtn:hover {
+      background: #005ea8;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="app" data-theme="light">
+  <aside>
+    <h2>Wsiadamy!</h2>
+    <input type="text" id="searchRoutes" placeholder="Szukaj trasy lub przystanku..." />
+    <div id="routeList" aria-live="polite" aria-label="Lista tras"></div>
+  </aside>
+
+  <main>
+    <button id="menuToggleBtn" aria-label="Pokaż menu">☰</button>
+    <header>
+      <button class="theme-toggle" aria-label="Przełącz tryb jasny/ciemny" title="Tryb jasny/ciemny">🌙</button>
+    </header>
+
+    <section id="welcomeMessage">
+      <h1>Wybierz trasę z lewej strony</h1>
+      <p>Wyszukaj trasę lub przystanek powyżej, aby zobaczyć szczegóły.</p>
+    </section>
+
+    <section id="routeDetails" hidden aria-live="polite" aria-atomic="true" style="display:flex; flex-direction: column;">
+      <div id="timeSelectors" role="radiogroup" aria-label="Wybierz godzinę odjazdu i przyjazdu"></div>
+      <div id="lineSelector"></div>
+      <div id="routeSummary"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const app = document.getElementById('app');
+  const routeListEl = document.getElementById('routeList');
+  const detailsEl = document.getElementById('routeDetails');
+  const welcomeEl = document.getElementById('welcomeMessage');
+  const searchInput = document.getElementById('searchRoutes');
+  const themeToggle = document.querySelector('.theme-toggle');
+  const menuToggleBtn = document.getElementById('menuToggleBtn');
+  const aside = document.querySelector('aside');
+  const main = document.querySelector('main');
+
+  let routes = [];
+  let selectedRouteIndex = null;
+  let selectedTimeIndex = 0;
+
+  // Przykładowy config (możesz zamienić na fetch z config.json)
+  routes = [
+    {
+      "name": "Janowice - IKEA Kraków",
+      "times": [
+        {"depart": "12:49", "arrive": "14:06"},
+        {"depart": "13:49", "arrive": "15:17"},
+        {"depart": "14:50", "arrive": "16:17"}
+      ],
+      "lines": [
+        {"name": "J1", "color": "#9acd32", "stops": ["Koźmice Wielkie Skrzyżowanie", "Kopce 2", "Siercza IV", "Siercza III", "Siercza 11", "Graówki II", "Graówki VII", "Wieliczka Jedynaka", "Wieliczka Solne Miasto", "Wieliczka Sąd", "Wieliczka Klaśnieńska", "Wieliczka Cenrum"]},
+        {"name": "Spacer pieszy", "color": "#999999", "distance": "(ok. 3 min)", "isWalk": true},
+        {"name": "304", "color": "#366df2", "stops": ["Wieliczka Kopalnia Soli", "Wieliczka Park", "Wieliczka Stacja Paliw", "Jerzmanowskiego", "Prokocim Szpital", "Bieżanowska", "Kamieńskiego", "Rondo Matecznego", "Konopnickiej", "Jubilat", "Muzeum Narodowe"]},
+        {"name": "173", "color": "#366df2", "stops": ["Kraków Muzeum Narodowe", "Kraków Czarnowiejska", "Kawiory", "Miasteczko Studenckie AGH", "Przybyszewskiego", "Kraków Armii Krajowej", "Zarzecze", "Kraków Bronowice SKA", "Rondo Ofiar Katynia", "Conrada"]}
+      ]
+    },
+    {
+      "name": "Trasa B",
+      "times": [
+        {"depart": "07:15", "arrive": "08:10"},
+        {"depart": "08:45", "arrive": "09:40"}
+      ],
+      "lines": [
+        {"name": "Linia 3", "color": "#27ae60", "stops": ["C1", "C2", "C3", "C4"]},
+        {"name": "Linia 4", "color": "#f39c12", "stops": ["D1", "D2"]}
+      ]
+    }
+  ];
+
+  // Render listy tras
+  function renderRoutes(routesToShow) {
+    routeListEl.innerHTML = '';
+    if(routesToShow.length === 0){
+      routeListEl.innerHTML = '<p>Brak tras pasujących do wyszukiwania.</p>';
+      return;
+    }
+    routesToShow.forEach((r, i) => {
+      const div = document.createElement('div');
+      div.className = 'route-item';
+      div.tabIndex = 0;
+      div.setAttribute('role', 'button');
+      div.setAttribute('aria-pressed', 'false');
+      div.setAttribute('aria-label', `Trasa: ${r.name}`);
+      div.onclick = () => selectRoute(i);
+      div.onkeydown = e => { if(e.key === 'Enter' || e.key === ' ') selectRoute(i) };
+
+      const colorDot = document.createElement('span');
+      colorDot.className = 'route-color';
+      colorDot.style.backgroundColor = r.lines.find(l => !l.isWalk)?.color || '#0078d7';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'route-name';
+      nameSpan.textContent = r.name;
+
+      div.appendChild(colorDot);
+      div.appendChild(nameSpan);
+      routeListEl.appendChild(div);
+    });
+  }
+
+  // Wybór trasy
+  function selectRoute(i) {
+    selectedRouteIndex = i;
+    selectedTimeIndex = 0;
+    welcomeEl.hidden = true;
+    detailsEl.hidden = false;
+    renderTimeSelector();
+    renderLines();
+    renderSummary();
+    closeSidebarOnMobile();
+  }
+
+  // Renderowanie wyboru godzin
+  function renderTimeSelector(){
+    const route = routes[selectedRouteIndex];
+    const container = document.getElementById('timeSelectors');
+    container.innerHTML = route.times.map((t,i) =>
+      `<button data-index="${i}" class="time-btn" role="radio" aria-checked="${i===selectedTimeIndex}" tabindex="${i===selectedTimeIndex ? '0' : '-1'}">
+        ${t.depart} - ${t.arrive}
+      </button>`
+    ).join(' ');
+
+    container.querySelectorAll('.time-btn').forEach(btn => {
+      btn.onclick = () => {
+        selectedTimeIndex = +btn.dataset.index;
+        updateAriaChecked(container, selectedTimeIndex);
+        renderLines();
+        renderSummary();
+      };
+      btn.onkeydown = e => {
+        let newIndex = selectedTimeIndex;
+        if(e.key === "ArrowRight" || e.key === "ArrowDown") {
+          newIndex = (selectedTimeIndex + 1) % routes[selectedRouteIndex].times.length;
+        } else if(e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          newIndex = (selectedTimeIndex - 1 + routes[selectedRouteIndex].times.length) % routes[selectedRouteIndex].times.length;
+        }
+        if(newIndex !== selectedTimeIndex) {
+          selectedTimeIndex = newIndex;
+          updateAriaChecked(container, selectedTimeIndex);
+          renderLines();
+          renderSummary();
+          container.querySelectorAll('.time-btn')[selectedTimeIndex].focus();
+        }
+      }
+    });
+
+    highlightSelectedTime(container.querySelector(`[data-index="${selectedTimeIndex}"]`));
+  }
+
+  function updateAriaChecked(container, selected) {
+    container.querySelectorAll('.time-btn').forEach((btn,i) => {
+      btn.setAttribute('aria-checked', i === selected);
+      btn.tabIndex = i === selected ? '0' : '-1';
+      btn.classList.toggle('selected', i === selected);
+    });
+  }
+
+  function highlightSelectedTime(selectedBtn){
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.classList.toggle('selected', btn === selectedBtn);
+    });
+  }
+
+  // Renderowanie linii
+ function renderLines(){
+  const route = routes[selectedRouteIndex];
+  const container = document.getElementById('lineSelector');
+  const time = route.times[selectedTimeIndex];
+  container.innerHTML = route.lines
+    .filter(line => line.name.trim() !== '')
+    .map(line => {
+      if(line.isWalk) {
+        return `<div class="line-item line-walk" title="Etap pieszy">
+          ${line.name} — ${line.distance || ''}
+        </div>`;
+      }
+      // Przystanki
+      let stopsHtml = '';
+      if(line.stops && line.stops.length > 0){
+        stopsHtml = '<div class="stops-list">';
+        line.stops.forEach((stop, index) => {
+          let cls = '';
+          if(index === 0) cls = 'first';
+          else if(index === line.stops.length - 1) cls = 'last';
+          stopsHtml += `<div class="stop ${cls}">${stop}</div>`;
+        });
+        stopsHtml += '</div>';
+      }
+      return `<div class="line-item" style="background:${line.color};" title="Przystanki: ${line.stops.join(', ')}">
+        ${line.name} | Odjazd: ${time.depart} | Przyjazd: ${time.arrive}
+        ${stopsHtml}
+      </div>`;
+    }).join('');
+}
+
+
+  // Podsumowanie trasy
+  function renderSummary(){
+    const route = routes[selectedRouteIndex];
+    const summary = document.getElementById('routeSummary');
+    const time = route.times[selectedTimeIndex];
+    summary.textContent = `Podsumowanie trasy: ${route.name} — wyjazd: ${time.depart}, dojazd: ${time.arrive}`;
+  }
+
+  // Wyszukiwanie
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
+    const filtered = routes.filter(r =>
+      r.name.toLowerCase().includes(term) ||
+      r.lines.some(line => line.stops?.some(stop => stop.toLowerCase().includes(term)))
+    );
+    renderRoutes(filtered);
+  });
+
+  // Tryb jasny/ciemny
+  themeToggle.onclick = () => {
+    if(app.getAttribute('data-theme') === 'light'){
+      app.setAttribute('data-theme', 'dark');
+      themeToggle.textContent = '☀️';
+    } else {
+      app.setAttribute('data-theme', 'light');
+      themeToggle.textContent = '🌙';
+    }
+  };
+
+  // Sidebar mobile toggle
+  menuToggleBtn.onclick = () => {
+    aside.classList.toggle('open');
+    main.classList.toggle('shifted');
+  };
+  function closeSidebarOnMobile(){
+    if(window.innerWidth <= 768){
+      aside.classList.remove('open');
+      main.classList.remove('shifted');
+    }
+  }
+
+  // Start
+  renderRoutes(routes);
+
+  // Accessibility: focus first route on load
+  routeListEl.querySelector('.route-item')?.focus();
+
+</script>
+
+</body>
+</html>
