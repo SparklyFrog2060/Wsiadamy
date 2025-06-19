@@ -309,109 +309,109 @@
   let selectedRouteIndex = null;
   let selectedTimeIndex = 0;
 
-  // Przykładowy config (możesz zamienić na fetch z config.json)
+  // Przykładowy config z godzinami dla każdej linii w tablicy times
   routes = [
-  {
-    "name": "Janowice - Ikea Kraków",
-    "times": [
-      {
-        "depart": "09:51",
-        "arrive": "11:11"
-      },
-      {
-        "depart": "10:54",
-        "arrive": "12:11"
-      },
-      {
-        "depart": "11:39",
-        "arrive": "12:51"
-      },
-      {
-        "depart": "13:49",
-        "arrive": "15:17"
-      },
-      {
-        "depart": "14:50",
-        "arrive": "16:17"
-      },
-      {
-        "depart": "15:49",
-        "arrive": "17:17"
-      }
-    ],
-    "lines": [
-      {
-        "name": "J1",
-        "color": "#9acd32",
-        "depart": null,
-        "arrive": null,
-        "stops": [
-          "Koźmice Wielkie Skrzyżowanie (NŻ)",
-          "Kopce 2 (NŻ)",
-          "Siercza 4 (NŻ)",
-          "Siercza 3 (NŻ)",
-          "Siercza 11 (NŻ)",
-          "Grabówki 2 (NŻ)",
-          "Grabówki 7 (NŻ)",
-          "Wieliczka Jedynaka (NŻ)",
-          "Wieliczka Solne Miasto 2 (NŻ)",
-          "Wieliczka Sąd (NŻ)",
-          "Wieliczka Klaśnieńska (NŻ)",
-          "Wieliczka Centrum"
-        ]
-      },
-      {
-        "name": "Spacer pieszy",
-        "color": "#999999",
-        "distance": "(ok. 3 min)",
-        "isWalk": true
-      },
-      {
-        "name": "304",
-        "color": "#366df2",
-        "depart": null,
-        "arrive": null,
-        "stops": [
-          "Wieliczka Kopalnia Soli 02",
-          "Wieliczka Park 02",
-          "Wieliczka Stacja Paliw 02",
-          "Jerzmanowskiego 02",
-          "Prokocim Szpital 06",
-          "Bieżanowska 10",
-          "Kamieńskiego 02",
-          "Rondo Matecznego 06",
-          "Konopnickiej 02",
-          "Jubilat 03",
-          "Muzeum Narodowe 05"
-        ]
-      },
-      {
-        "name": "173",
-        "color": "#366df2",
-        "depart": null,
-        "arrive": null,
-        "stops": [
-          "Muzeum Narodowe 05",
-          "Czarnowiejska 01",
-          "Kawiory 02",
-          "Miasteczko Studenckie AGH 02",
-          "Przybyszewskiego 02",
-          "Armii Krajowej 02",
-          "Zarzecze 02",
-          "Bronowice SKA 06",
-          "Rondo Ofiar Katynia 01",
-          "Conrada 01"
-        ]
-      },
-      {
-        "name": "Spacer pieszy",
-        "color": "#999999",
-        "distance": "(ok. 1 min)",
-        "isWalk": true
-      }
-    ]
-  }
-];
+    {
+      "name": "Janowice - Ikea Kraków",
+      "times": [
+        { "depart": "09:51", "arrive": "11:11" },
+        { "depart": "10:54", "arrive": "12:11" },
+        { "depart": "11:39", "arrive": "12:51" },
+        { "depart": "13:49", "arrive": "15:17" },
+        { "depart": "14:50", "arrive": "16:17" },
+        { "depart": "15:49", "arrive": "17:17" }
+      ],
+      "lines": [
+        {
+          "name": "J1",
+          "color": "#9acd32",
+          "times": [
+            { "depart": "09:52", "arrive": "10:15" },
+            { "depart": "10:55", "arrive": "11:17" },
+            { "depart": "11:40", "arrive": "12:01" },
+            { "depart": "13:50", "arrive": "14:10" },
+            { "depart": "14:51", "arrive": "15:15" },
+            { "depart": "15:50", "arrive": "16:10" }
+          ],
+          "stops": [
+            "Koźmice Wielkie Skrzyżowanie (NŻ)",
+            "Kopce 2 (NŻ)",
+            "Siercza 4 (NŻ)",
+            "Siercza 3 (NŻ)",
+            "Siercza 11 (NŻ)",
+            "Grabówki 2 (NŻ)",
+            "Grabówki 7 (NŻ)",
+            "Wieliczka Jedynaka (NŻ)",
+            "Wieliczka Solne Miasto 2 (NŻ)",
+            "Wieliczka Sąd (NŻ)",
+            "Wieliczka Klaśnieńska (NŻ)",
+            "Wieliczka Centrum"
+          ]
+        },
+        {
+          "name": "Spacer pieszy",
+          "color": "#999999",
+          "distance": "(ok. 3 min)",
+          "isWalk": true
+        },
+        {
+          "name": "304",
+          "color": "#366df2",
+          "times": [
+            { "depart": "10:20", "arrive": "10:50" },
+            { "depart": "11:20", "arrive": "11:50" },
+            { "depart": "12:20", "arrive": "12:50" },
+            { "depart": "14:10", "arrive": "14:40" },
+            { "depart": "15:10", "arrive": "15:40" },
+            { "depart": "16:10", "arrive": "16:40" }
+          ],
+          "stops": [
+            "Wieliczka Kopalnia Soli 02",
+            "Wieliczka Park 02",
+            "Wieliczka Stacja Paliw 02",
+            "Jerzmanowskiego 02",
+            "Prokocim Szpital 06",
+            "Bieżanowska 10",
+            "Kamieńskiego 02",
+            "Rondo Matecznego 06",
+            "Konopnickiej 02",
+            "Jubilat 03",
+            "Muzeum Narodowe 05"
+          ]
+        },
+        {
+          "name": "173",
+          "color": "#366df2",
+          "times": [
+            { "depart": "10:55", "arrive": "11:35" },
+            { "depart": "11:55", "arrive": "12:35" },
+            { "depart": "12:55", "arrive": "13:35" },
+            { "depart": "14:50", "arrive": "15:20" },
+            { "depart": "15:50", "arrive": "16:20" },
+            { "depart": "16:50", "arrive": "17:20" }
+          ],
+          "stops": [
+            "Muzeum Narodowe 05",
+            "Czarnowiejska 01",
+            "Kawiory 02",
+            "Miasteczko Studenckie AGH 02",
+            "Przybyszewskiego 02",
+            "Armii Krajowej 02",
+            "Zarzecze 02",
+            "Bronowice SKA 06",
+            "Rondo Ofiar Katynia 01",
+            "Conrada 01"
+          ]
+        },
+        {
+          "name": "Spacer pieszy",
+          "color": "#999999",
+          "distance": "(ok. 1 min)",
+          "isWalk": true
+        }
+      ]
+    }
+  ];
 
   // Render listy tras
   function renderRoutes(routesToShow) {
@@ -519,7 +519,6 @@
             ${line.name} — ${line.distance || ''}
           </div>`;
         }
-        // Przystanki
         let stopsHtml = '';
         if(line.stops && line.stops.length > 0){
           stopsHtml = '<div class="stops-list">';
@@ -531,9 +530,9 @@
           });
           stopsHtml += '</div>';
         }
-        // Godziny indywidualne linii (jeśli są)
-        const depart = line.depart ? line.depart : '';
-        const arrive = line.arrive ? line.arrive : '';
+
+        const depart = line.times?.[selectedTimeIndex]?.depart || '';
+        const arrive = line.times?.[selectedTimeIndex]?.arrive || '';
         const timeInfo = (depart && arrive) ? ` | Odjazd: ${depart} | Przyjazd: ${arrive}` : '';
 
         return `<div class="line-item" style="background:${line.color};" title="Przystanki: ${line.stops?.join(', ') || ''}">
@@ -542,7 +541,6 @@
         </div>`;
       }).join('');
   }
-
 
   // Podsumowanie trasy
   function renderSummary(){
@@ -592,6 +590,5 @@
   routeListEl.querySelector('.route-item')?.focus();
 
 </script>
-
 </body>
 </html>
