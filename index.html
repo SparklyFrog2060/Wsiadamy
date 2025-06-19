@@ -311,22 +311,107 @@
 
   // Przykładowy config (możesz zamienić na fetch z config.json)
   routes = [
-    {
-      "name": "Janowice - IKEA Kraków",
-      "times": [
-        {"depart": "12:49", "arrive": "14:06"},
-        {"depart": "13:49", "arrive": "15:17"},
-        {"depart": "14:50", "arrive": "16:17"}
-      ],
-      "lines": [
-        {"name": "J1", "color": "#9acd32", "stops": ["Koźmice Wielkie Skrzyżowanie", "Kopce 2", "Siercza IV", "Siercza III", "Siercza 11", "Graówki II", "Graówki VII", "Wieliczka Jedynaka", "Wieliczka Solne Miasto", "Wieliczka Sąd", "Wieliczka Klaśnieńska", "Wieliczka Cenrum"]},
-        {"name": "Spacer pieszy", "color": "#999999", "distance": "(ok. 3 min)", "isWalk": true},
-        {"name": "304", "color": "#366df2", "stops": ["Wieliczka Kopalnia Soli", "Wieliczka Park", "Wieliczka Stacja Paliw", "Jerzmanowskiego", "Prokocim Szpital", "Bieżanowska", "Kamieńskiego", "Rondo Matecznego", "Konopnickiej", "Jubilat", "Muzeum Narodowe"]},
-        {"name": "173", "color": "#366df2", "stops": ["Kraków Muzeum Narodowe", "Kraków Czarnowiejska", "Kawiory", "Miasteczko Studenckie AGH", "Przybyszewskiego", "Kraków Armii Krajowej", "Zarzecze", "Kraków Bronowice SKA", "Rondo Ofiar Katynia", "Conrada"]}
-      ]
-    },
-    
-  ];
+  {
+    "name": "Janowice - Ikea Kraków",
+    "times": [
+      {
+        "depart": "09:51",
+        "arrive": "11:11"
+      },
+      {
+        "depart": "10:54",
+        "arrive": "12:11"
+      },
+      {
+        "depart": "11:39",
+        "arrive": "12:51"
+      },
+      {
+        "depart": "13:49",
+        "arrive": "15:17"
+      },
+      {
+        "depart": "14:50",
+        "arrive": "16:17"
+      },
+      {
+        "depart": "15:49",
+        "arrive": "17:17"
+      }
+    ],
+    "lines": [
+      {
+        "name": "J1",
+        "color": "#9acd32",
+        "depart": null,
+        "arrive": null,
+        "stops": [
+          "Koźmice Wielkie Skrzyżowanie (NŻ)",
+          "Kopce 2 (NŻ)",
+          "Siercza 4 (NŻ)",
+          "Siercza 3 (NŻ)",
+          "Siercza 11 (NŻ)",
+          "Grabówki 2 (NŻ)",
+          "Grabówki 7 (NŻ)",
+          "Wieliczka Jedynaka (NŻ)",
+          "Wieliczka Solne Miasto 2 (NŻ)",
+          "Wieliczka Sąd (NŻ)",
+          "Wieliczka Klaśnieńska (NŻ)",
+          "Wieliczka Centrum"
+        ]
+      },
+      {
+        "name": "Spacer pieszy",
+        "color": "#999999",
+        "distance": "(ok. 3 min)",
+        "isWalk": true
+      },
+      {
+        "name": "304",
+        "color": "#366df2",
+        "depart": null,
+        "arrive": null,
+        "stops": [
+          "Wieliczka Kopalnia Soli 02",
+          "Wieliczka Park 02",
+          "Wieliczka Stacja Paliw 02",
+          "Jerzmanowskiego 02",
+          "Prokocim Szpital 06",
+          "Bieżanowska 10",
+          "Kamieńskiego 02",
+          "Rondo Matecznego 06",
+          "Konopnickiej 02",
+          "Jubilat 03",
+          "Muzeum Narodowe 05"
+        ]
+      },
+      {
+        "name": "173",
+        "color": "#366df2",
+        "depart": null,
+        "arrive": null,
+        "stops": [
+          "Muzeum Narodowe 05",
+          "Czarnowiejska 01",
+          "Kawiory 02",
+          "Miasteczko Studenckie AGH 02",
+          "Przybyszewskiego 02",
+          "Armii Krajowej 02",
+          "Zarzecze 02",
+          "Bronowice SKA 06",
+          "Rondo Ofiar Katynia 01",
+          "Conrada 01"
+        ]
+      },
+      {
+        "name": "Spacer pieszy",
+        "color": "#999999",
+        "distance": "(ok. 1 min)",
+        "isWalk": true
+      }
+    ]
+  }
+];
 
   // Render listy tras
   function renderRoutes(routesToShow) {
